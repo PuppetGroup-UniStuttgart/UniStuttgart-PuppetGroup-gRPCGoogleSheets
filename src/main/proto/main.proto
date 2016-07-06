@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_outer_classname = "GoogleSheetsProto";
+
+package cloudlab.GoogleSheetsProto;
+
+message Empty {
+}
+
+// The response message containing list of spreadsheet name shared to the given service account.
+message SpreadsheetListReply {
+  repeated string spreadsheetName = 1;
+}
+
+// The request message to obtain worksheet details for given spreadsheet.
+message WorksheetListRequest {
+  string spreadsheetId = 1;
+}
+
+// The response message containing list of worksheet details.
+message WorksheetListReply {
+  repeated string worksheetDetails = 1;
+}
+
+// The request message for creating worksheet.
+message CreateWorksheetRequest {
+  string spreadsheetName = 1;
+  string worksheetName = 2;
+  int32 col = 3;
+  int32 row = 4;
+}
+
+// The response message containing success message.
+message CreateWorksheetReply {
+  string success = 1;
+}
+
+// The request message for updating worksheet.
+message UpdateWorksheetRequest {
+  string spreadsheetId = 1;
+  string oldWorksheetName = 2;
+  string newWorksheetName = 3;
+  int32 newWorksheetCol = 4;
+  int32 newWorksheetRow = 5;
+}
+
+// The response message containing success message.
+message UpdateWorksheetReply {
+  string success = 1;
+}
+
+// The request message for deleting worksheet.
+message DeleteWorksheetRequest {
+  string spreadsheetId = 1;
+  string worksheetName = 2;
+}
+
+// The response message containing success message.
+message DeleteWorksheetReply {
+  string success = 1;
+}
+
+// The request message for displaying worksheet content.
+message GetWorksheetContentsRequest {
+  string spreadsheetId = 1;
+  string worksheetName = 2;
+}
+
+// The response message containing worksheet contents.
+message GetWorksheetContentsReply {
+  repeated string contents = 1;
+}
+
+// The request message for fetching a row or column.
+message FetchRowColRequest {
+  string spreadsheetId = 1;
+  string worksheetName = 2;
+  int32 col = 3;
+  int32 row = 4;
+}
+
+// The response message containing row or column contents.
+message FetchRowColReply {
+  repeated string contents = 1;
+}
+
+// The request message for deleting a row.
+message DeleteRowRequest {
+  string spreadsheetId = 1;
+  string worksheetName = 2;
+  int32 row = 3;
+}
+
+// The response message containing success message.
+message DeleteRowReply {
+  string success = 1;
+}
+
+service GoogleSheets {
+  rpc spreadsheetList (Empty) returns (SpreadsheetListReply) {}
+  rpc worksheetList (WorksheetListRequest) returns (WorksheetListReply) {}
+  rpc createWorksheet (CreateWorksheetRequest) returns (CreateWorksheetReply) {}
+  rpc updateWorksheet (UpdateWorksheetRequest) returns (UpdateWorksheetReply) {}
+  rpc deleteWorksheet (DeleteWorksheetRequest) returns (DeleteWorksheetReply) {}
+  rpc getWorksheetContents (GetWorksheetContentsRequest) returns (GetWorksheetContentsReply) {}
+  rpc fetchRowCol (FetchRowColRequest) returns (FetchRowColReply) {}
+  rpc deleteRow (DeleteRowRequest) returns (DeleteRowReply) {}
+}

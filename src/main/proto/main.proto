@@ -27,8 +27,8 @@ message WorksheetListReply {
 message CreateWorksheetRequest {
   string spreadsheetName = 1;
   string worksheetName = 2;
-  int32 col = 3;
-  int32 row = 4;
+  int32 row = 3;
+  int32 col = 4;
 }
 
 // The response message containing success message.
@@ -41,8 +41,8 @@ message UpdateWorksheetRequest {
   string spreadsheetId = 1;
   string oldWorksheetName = 2;
   string newWorksheetName = 3;
-  int32 newWorksheetCol = 4;
-  int32 newWorksheetRow = 5;
+  int32 newWorksheetRow = 4;
+  int32 newWorksheetCol = 5;
 }
 
 // The response message containing success message.
@@ -76,8 +76,8 @@ message GetWorksheetContentsReply {
 message FetchRowColRequest {
   string spreadsheetId = 1;
   string worksheetName = 2;
-  int32 col = 3;
-  int32 row = 4;
+  int32 row = 3;
+  int32 col = 4;
 }
 
 // The response message containing row or column contents.

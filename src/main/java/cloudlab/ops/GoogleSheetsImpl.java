@@ -340,9 +340,9 @@ public class GoogleSheetsImpl implements GoogleSheets {
 			URL cellFeedUrl = new URL(worksheet.getCellFeedUrl().toString() + "?min-row=1&max-row=1");
 			CellFeed cellFeed = service.getFeed(cellFeedUrl, CellFeed.class);
 			for (CellEntry cellEntry : cellFeed.getEntries()) {
-				details = cellEntry.getCell().getValue() + "\t";
+				details += cellEntry.getCell().getValue() + "\t";
 			}
-			builder = builder.addContents(details + "\n");
+			details += "\n";
 
 			// Fetch the list feed of the worksheet.
 			URL listFeedUrl = worksheet.getListFeedUrl();
@@ -352,10 +352,11 @@ public class GoogleSheetsImpl implements GoogleSheets {
 			for (ListEntry row : listFeed.getEntries()) {
 				// Iterate over the remaining columns, and print each cell value
 				for (String tag : row.getCustomElements().getTags()) {
-					details = row.getCustomElements().getValue(tag) + "\t";
+					details += row.getCustomElements().getValue(tag) + "\t";
 				}
-				builder = builder.addContents(details + "\n");
+				details += "\n";
 			}
+			builder = builder.addContents(details);
 
 			responseObserver.onNext(builder.build());
 			responseObserver.onCompleted();
@@ -394,10 +395,10 @@ public class GoogleSheetsImpl implements GoogleSheets {
 					break;
 			}
 
-			if (request.getRow() >= 0) {
+			if (request.getRow() > 0) {
 				parms = "?min-row=" + request.getRow() + "&max-row=" + request.getRow();
 				del = "\t";
-			} else if (request.getCol() >= 0) {
+			} else if (request.getCol() > 0) {
 				parms = "?min-col=" + request.getCol() + "&max-col=" + request.getCol();
 				del = "\n";
 			}

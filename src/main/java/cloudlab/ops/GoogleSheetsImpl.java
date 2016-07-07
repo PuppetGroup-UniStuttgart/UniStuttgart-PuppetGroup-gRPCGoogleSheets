@@ -153,7 +153,7 @@ public class GoogleSheetsImpl implements GoogleSheets {
 		}
 	}
 
-	@Override
+@Override
 	public void createWorksheet(CreateWorksheetRequest request, StreamObserver<CreateWorksheetReply> responseObserver) {
 
 		SpreadsheetService service = new SpreadsheetService("GoogleSheetsGrpc");
@@ -171,46 +171,49 @@ public class GoogleSheetsImpl implements GoogleSheets {
 			List<SpreadsheetEntry> spreadsheets = feed.getEntries();
 
 			if (spreadsheets.size() == 0) {
-				reply.newBuilder().setSuccess("No spreadsheets found.").build();
+				reply = CreateWorksheetReply.newBuilder().setSuccess("No spreadsheets found.").build();
 			}
 
-			SpreadsheetEntry spreadsheet = null;
-			for (int i = 0; i < spreadsheets.size(); i++) {
-				spreadsheet = spreadsheets.get(i);
-				// Get the required spreadsheet.
-				if (spreadsheet.getTitle().getPlainText().equals(request.getSpreadsheetName()))
-					break;
+			else {
+				SpreadsheetEntry spreadsheet = null;
+				for (int i = 0; i < spreadsheets.size(); i++) {
+					spreadsheet = spreadsheets.get(i);
+					// Get the required spreadsheet.
+					if (spreadsheet.getTitle().getPlainText().equals(request.getSpreadsheetName()))
+						break;
+				}
+
+				// Create a local representation of the new worksheet.
+				WorksheetEntry worksheet = new WorksheetEntry();
+				worksheet.setTitle(new PlainTextConstruct(request.getWorksheetName()));
+				worksheet.setColCount(request.getRow());
+				worksheet.setRowCount(request.getCol());
+
+				// Send the local representation of the worksheet to the API for
+				// creation. The URL to use here is the worksheet feed URL of
+				// the
+				// spreadsheet.
+				URL worksheetFeedUrl = spreadsheet.getWorksheetFeedUrl();
+				WorksheetEntry worksheetSucess = new WorksheetEntry();
+				worksheetSucess = service.insert(worksheetFeedUrl, worksheet);
+
+				if (worksheetSucess.getId() != null) {
+					reply = CreateWorksheetReply.newBuilder().setSuccess("Worksheet "
+							+ worksheetSucess.getTitle().getPlainText().toString() + " is created. Please check")
+							.build();
+				} else {
+					reply = CreateWorksheetReply.newBuilder().setSuccess("Creation unsuccessful. ").build();
+				}
+
+				responseObserver.onNext(reply);
+				responseObserver.onCompleted();
 			}
-
-			// Create a local representation of the new worksheet.
-			WorksheetEntry worksheet = new WorksheetEntry();
-			worksheet.setTitle(new PlainTextConstruct(request.getWorksheetName()));
-			worksheet.setColCount(request.getRow());
-			worksheet.setRowCount(request.getCol());
-
-			// Send the local representation of the worksheet to the API for
-			// creation. The URL to use here is the worksheet feed URL of the
-			// spreadsheet.
-			URL worksheetFeedUrl = spreadsheet.getWorksheetFeedUrl();
-			WorksheetEntry worksheetSucess = new WorksheetEntry();
-			worksheetSucess = service.insert(worksheetFeedUrl, worksheet);
-
-			if (worksheetSucess.getId() != null)
-				reply.newBuilder()
-						.setSuccess("Worksheet " + worksheetSucess.getTitle().getPlainText() + " is created. Please check")
-						.build();
-			else
-				reply.newBuilder().setSuccess("Creation unsuccessful. ").build();
-
-			responseObserver.onNext(reply);
-			responseObserver.onCompleted();
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
@@ -248,7 +251,8 @@ public class GoogleSheetsImpl implements GoogleSheets {
 			// Send the local representation of the worksheet to the API for
 			// modification.
 			worksheet.update();
-			reply.newBuilder().setSuccess("Worksheet " + worksheet.getTitle().getPlainText() + " is updated. Please check")
+			reply = UpdateWorksheetReply.newBuilder()
+					.setSuccess("Worksheet " + worksheet.getTitle().getPlainText() + " is updated. Please check")
 					.build();
 
 			responseObserver.onNext(reply);
@@ -289,7 +293,8 @@ public class GoogleSheetsImpl implements GoogleSheets {
 
 			// Delete the worksheet via the API.
 			worksheet.delete();
-			reply.newBuilder().setSuccess("Worksheet " + worksheet.getTitle().getPlainText() + " is deleted. Please check")
+			reply = DeleteWorksheetReply.newBuilder()
+					.setSuccess("Worksheet " + worksheet.getTitle().getPlainText() + " is deleted. Please check")
 					.build();
 
 			responseObserver.onNext(reply);
@@ -448,7 +453,8 @@ public class GoogleSheetsImpl implements GoogleSheets {
 			// Delete the row using the API.
 			row.delete();
 
-			reply.newBuilder().setSuccess("Row: " + row.getPlainTextContent() + " is deleted. Please check").build();
+			reply = DeleteRowReply.newBuilder()
+				.setSuccess("Row: " + row.getPlainTextContent() + " is deleted. Please check").build();
 
 			responseObserver.onNext(reply);
 			responseObserver.onCompleted();

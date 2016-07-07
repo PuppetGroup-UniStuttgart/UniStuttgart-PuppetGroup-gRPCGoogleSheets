@@ -2,7 +2,6 @@ package cloudlab.ops;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -51,7 +50,7 @@ public class GoogleSheetsImpl implements GoogleSheets {
 	private final String CLIENT_ID = "grpcgooglesheets@ivory-plane-135618.iam.gserviceaccount.com";
 
 	// The name of the p12 file of the grpc application service account
-	private final String P12FILE = "/GrpcGoogleSheets.p12";
+	private final String P12FILE = System.getProperty("user.dir") + "/src/main/resources/GrpcGoogleSheets.p12";
 
 	private GoogleCredential getCredentials() {
 
@@ -66,18 +65,15 @@ public class GoogleSheetsImpl implements GoogleSheets {
 					"https://docs.google.com/feeds" };
 			final List SCOPES = Arrays.asList(SCOPESArray);
 
-			URL fileUrl = this.getClass().getResource(P12FILE);
 			credential = new GoogleCredential.Builder().setTransport(httpTransport).setJsonFactory(JSON_FACTORY)
-					.setServiceAccountId(CLIENT_ID).setServiceAccountPrivateKeyFromP12File(new File(fileUrl.toURI()))
+					.setServiceAccountId(CLIENT_ID).setServiceAccountPrivateKeyFromP12File(new File(P12FILE))
 					.setServiceAccountScopes(SCOPES).build();
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (GeneralSecurityException e) {
 			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
+		} 
 		return credential;
 	}
 

@@ -50,7 +50,7 @@ public class GoogleSheetsImpl implements GoogleSheets {
 	private final String CLIENT_ID = "grpcgooglesheets@ivory-plane-135618.iam.gserviceaccount.com";
 
 	// The name of the p12 file of the grpc application service account
-	private final String P12FILE = System.getProperty("user.dir") + "/src/main/resources/GrpcGoogleSheets.p12";
+	private final String P12FILE = "/GrpcGoogleSheets.p12";
 
 	private GoogleCredential getCredentials() {
 

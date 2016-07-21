@@ -66,4 +66,4 @@ Input to this method
     row: The row number to be deleted 
     
 NOTE:
-In access the required spreadsheet, it would have to shared to the service account. The service account for our GoogleSheetsgRPC application is: grpcgooglesheets@ivory-plane-135618.iam.gserviceaccount.com
+In access the required spreadsheet, it would have to shared to the service account. The service account for our GoogleSheets gRPC application is: grpcgooglesheets@ivory-plane-135618.iam.gserviceaccount.com
